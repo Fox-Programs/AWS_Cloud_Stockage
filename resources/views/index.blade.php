@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon S3 Cloud Drive</title>
-    <!-- Chargement de Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-gray-50 font-sans text-gray-800 antialiased">
@@ -22,16 +21,18 @@
         <span class="text-xs bg-blue-100 text-blue-800 font-medium px-2.5 py-0.5 rounded-full">AWS S3 Connecté</span>
     </header>
 
-    <!-- Messages flash (Succès / Erreur) -->
     @if(session('success'))
         <div class="mb-6 p-4 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-800 rounded shadow-xs">
             {{ session('success') }}
         </div>
     @endif
+    @if(session('errors'))
+        <div class="mb-6 p-4 bg-emerald-50 border-l-4 border-red-500 text-red-800 rounded shadow-xs">
+            {{ session('errors') }}
+        </div>
+    @endif
 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-
-        <!-- Colonne Gauche : Zone d'Upload (Spec 2) -->
         <div class="md:col-span-1">
             <div class="bg-white p-6 rounded-xl shadow-xs border border-gray-100 sticky top-6">
                 <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-4">Ajouter un fichier</h2>
@@ -53,7 +54,6 @@
             </div>
         </div>
 
-        <!-- Colonne Droite : Liste des fichiers & Métadonnées (Spec 1, 3, 4) -->
         <div class="md:col-span-3">
             <div class="bg-white rounded-xl shadow-xs border border-gray-100 overflow-hidden">
 
@@ -65,7 +65,6 @@
                         <p class="text-xs text-gray-400 mt-1">Déposez votre premier document pour commencer.</p>
                     </div>
                 @else
-                    <!-- Tableau des fichiers -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
@@ -80,32 +79,24 @@
                             <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
                             @foreach($files as $file)
                                 <tr class="hover:bg-gray-50/70 transition-colors">
-                                    <!-- Nom du fichier -->
                                     <td class="p-4 font-medium text-gray-900 max-w-xs truncate">
                                         {{ $file['name'] }}
                                     </td>
-                                    <!-- Type MIME -->
                                     <td class="p-4">
                                                 <span class="text-xs bg-gray-100 px-2 py-1 rounded-sm text-gray-600 font-mono">
                                                     {{ Str::limit($file['type'], 20) }}
                                                 </span>
                                     </td>
-                                    <!-- Taille -->
                                     <td class="p-4 text-gray-500 text-xs">
                                         {{ $file['size'] }}
                                     </td>
-                                    <!-- Date de modif -->
                                     <td class="p-4 text-gray-500 text-xs">
                                         {{ $file['last_modified'] }}
                                     </td>
-                                    <!-- Actions -->
                                     <td class="p-4 text-right space-x-2 whitespace-nowrap">
-                                        <!-- Bouton Télécharger -->
                                         <a href="{{ route('drive.download', $file['path']) }}" class="inline-flex items-center text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium px-2.5 py-1.5 rounded transition-colors">
                                             ⬇️ Télécharger
                                         </a>
-
-                                        <!-- Bouton Supprimer -->
                                         <form action="{{ route('drive.destroy', $file['path']) }}" method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
@@ -123,9 +114,7 @@
 
             </div>
         </div>
-
     </div>
 </div>
-
 </body>
 </html>
