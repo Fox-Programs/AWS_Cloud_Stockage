@@ -1,58 +1,71 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📁 Laravel S3 Drive
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Une application de gestion de fichiers (Cloud Drive) développée avec **Laravel** et propulsée par **Amazon S3**. Ce projet permet de stocker, lister et gérer des fichiers directement sur l'infrastructure cloud d'AWS.
 
-## About Laravel
+## 🚀 Fonctionnalités
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+L'application répond aux exigences suivantes :
+1. **Listing dynamique** : Récupération du contenu du Bucket S3 avec affichage des métadonnées (nom, type MIME, taille formatée, date de modification).
+2. **Upload sécurisé** : Téléversement de fichiers vers un dossier spécifique sur le Bucket.
+3. **Téléchargement privé** : Génération d'URLs temporaires signées (AWS Presigned URLs) pour permettre le téléchargement sécurisé des fichiers sans les rendre publics.
+4. **Suppression** : Nettoyage des éléments du Bucket directement depuis l'interface.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛠️ Stack Technique
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Backend** : Laravel 11+ (PHP 8.5)
+- **Stockage** : AWS S3 (via SDK AWS & Flysystem)
+- **Frontend** : Blade & Tailwind CSS
+- **Serveur** : AWS EC2 (Ubuntu 24.04, Nginx, PHP-FPM)
 
-## Learning Laravel
+## 📦 Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Prérequis
+- PHP 8.5+
+- Composer
+- Un compte AWS avec un utilisateur IAM (accès S3) et un Bucket.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Installation locale
+1. **Cloner le projet** :
+   ```bash
+   git clone [https://github.com/Fox-Programs/AWS_Cloud_Stockage.git](https://github.com/Fox-Programs/AWS_Cloud_Stockage.git)
+   cd AWS_Cloud_Stockage
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+2. **Installer les dépendances** :
+    ```bash
+    composer install
+    ```
 
-## Agentic Development
+3. **Configurer l'environnement** :
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+    Copiez le fichier .env.example en .env et renseignez vos accès AWS :
+    ```bash
+    AWS_ACCESS_KEY_ID=votre_access_key
+    AWS_SECRET_ACCESS_KEY=votre_secret_key
+    AWS_DEFAULT_REGION=votre_region
+    AWS_BUCKET=nom_de_votre_bucket
+    FILESYSTEM_DISK=s3
+    ```
 
-```bash
-composer require laravel/boost --dev
+4. **Lancer l'application** :
+    ```bash
+    php artisan key:generate
+    php artisan serve
+    ```
 
-php artisan boost:install
-```
+## 🌐 Déploiement sur AWS EC2
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Le projet est configuré pour être déployé sur une instance EC2 avec Nginx.
 
-## Contributing
+**Points clés du déploiement :**
+- Utilisation de PHP 8.5-FPM.
+- Configuration des permissions sur `storage` et `bootstrap/cache`.
+- Ajustement du `php.ini` pour autoriser l'upload de fichiers volumineux (`post_max_size` & `upload_max_filesize`).
+- Mise en cache des configurations pour la performance (`php artisan config:cache`).
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🔒 Sécurité
+- Les fichiers sur S3 ne sont pas publics.
+- L'accès aux fichiers se fait via des URLs temporaires (Presigned URLs) valides 5 minutes.
+- Utilisation de politiques IAM restreintes au strict nécessaire (List, Get, Put, Delete).
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+Développé par [Fox-Programs](https://github.com/Fox-Programs)
